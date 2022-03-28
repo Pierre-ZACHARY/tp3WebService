@@ -1,0 +1,54 @@
+### Doit donner 200 --> pas besoin de se log
+POST http://localhost:8080/inscription
+Content-Type: application/json
+
+{
+  "numEtu": 2183251,
+  "nom": "Zachary",
+  "prenom": "Pierre",
+  "email": "pierre.zachary@etu.univ-orleans.fr",
+  "password": "123456",
+  "dateNaissance": "12/10/2000"
+}
+
+> {%client.test("Request executed successfully", function() {
+client.assert(response.status === 200, "Response status is not 200");});%}
+
+### Doit donner 200 --> pas besoin de se log
+POST http://localhost:8080/inscription
+Content-Type: application/json
+
+{
+  "numEtu": 1212121,
+  "nom": "Zachary1",
+  "prenom": "Pierre1",
+  "email": "pierre1.zachary1@etu.univ-orleans.fr",
+  "password": "1234567",
+  "dateNaissance": "12/10/2001"
+}
+
+> {%client.test("Request executed successfully", function() {
+client.assert(response.status === 200, "Response status is not 200");});%}
+
+### Doit donner 401 --> on est pas log
+GET http://localhost:8080/user/2183251
+Accept: application/json
+
+> {%client.test("Request executed successfully", function() {
+client.assert(response.status === 401, "Response status is not 401");});%}
+
+### Doit donner 200 --> on est bien log + c'est notre compte
+GET http://localhost:8080/user/2183251
+Accept: application/json
+Authorization: Basic 2183251 123456
+
+> {%client.test("Request executed successfully", function() {
+client.assert(response.status === 200, "Response status is not 200");});%}
+
+### Doit donner 403 --> on est bien log mais c'est pas notre compte
+GET http://localhost:8080/user/1212121
+Content-Type: application/json
+Authorization: Basic 2183251 123456
+
+> {%client.test("Request executed successfully", function() {
+client.assert(response.status === 403, "Response status is not 403");});%}
